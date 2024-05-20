@@ -12,18 +12,18 @@ start_vpn() {
     if [ ! -f "$base_path/config.txt" ]; then
         echo "Error: Configuration is not set yet. Please set the configuration using the --set-config option."
     else
-        if ! openvpn_path=$(command -v openvpn); then
+        if ! openvpn_path=$(brew --prefix openvpn); then
             echo "Error: openvpn command not found, please install the dependency (brew install openvpn)"
             return 1
         fi
 
-        if ! oathtool_path=$(command -v oathtool); then
+        if ! oathtool_path=$(brew --prefix oath-toolkit); then
             echo "Error: oathtool command not found, please install this dependency (brew install oath-toolkit)"
             return 1
         fi
 
-        echo "$openvpn_path" > "$base_path/deps.txt"
-        echo "$oathtool_path" >> "$base_path/deps.txt"
+        echo "$openvpn_path/sbin/openvpn" > "$base_path/deps.txt"
+        echo "$oathtool_path/bin/oathtool" >> "$base_path/deps.txt"
 
         sudo launchctl load /Library/LaunchDaemons/com.infinity.vpn.plist
         echo "Started VPN Background process."
