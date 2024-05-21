@@ -94,7 +94,8 @@ set_config() {
 }
 
 show_logs() {
-    cat /var/log/vpn-infinity/logs.log
+#    cat /var/log/vpn-infinity/logs.log
+    tail -n 1000 -f /var/log/vpn-infinity/logs.log
 }
 
 show_help() {
