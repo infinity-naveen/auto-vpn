@@ -50,6 +50,18 @@ check_vpn_connection() {
     fi
 }
 
+check_and_connect_vpn2() {
+  local file_path="$base_path/vpn_profile_2.ovpn"
+
+      if [ -e "$file_path" ]; then
+          log "VPN2 config also found, will connect this also"
+          reload_config
+          $openvpn_path --config "$base_path/vpn_profile_2.ovpn" --auth-user-pass "$base_path/vpn_creds_2.txt" --auth-nocache &
+      else
+          log "Debug log: No VPN2 config"
+      fi
+}
+
 main_script() {
     log "VPN background script started"
     while true; do
@@ -60,6 +72,7 @@ main_script() {
             log "VPN is not connected, will try to connect..."
             kill_existing_openvpn_processes
             connect_to_vpn &
+            check_and_connect_vpn2
             sleep 30
         fi
     done

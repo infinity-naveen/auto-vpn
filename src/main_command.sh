@@ -93,6 +93,28 @@ set_config() {
     fi
 }
 
+set_config_2() {
+    if [ $# -ne 3 ]; then
+        echo "Error: Missing parameters. Usage: auto-vpn --set-config profile_path username password"
+    else
+        echo "Setting VPN2 configuration..."
+        if [ ! -f "$1" ]; then
+            echo "Error: VPN2 profile file does not exist."
+            return 1
+        fi
+
+        profile_path=$(realpath "$1")
+        cp "$profile_path" "$base_path/vpn_profile_2.ovpn"
+
+        cred_file_name="$base_path/vpn_creds_2.txt"
+        echo "$2" > "$cred_file_name"
+        echo "$3" >> "$cred_file_name"
+
+        echo "Configuration2 set successfully."
+    fi
+}
+
+
 show_logs() {
 #    cat /var/log/vpn-infinity/logs.log
     tail -n 1000 -f /var/log/vpn-infinity/logs.log
@@ -126,6 +148,9 @@ main_command_executor() {
             ;;
         --set-config)
             set_config "${@:2}"
+            ;;
+        --set-config-2)
+            set_config_2 "${@:2}"
             ;;
         --get-config)
             get_config
