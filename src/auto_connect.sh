@@ -43,10 +43,22 @@ connect_to_vpn() {
 }
 
 check_vpn_connection() {
-    if netstat -nr | grep "3.6.0.175"; then
-        return 0
+    (curl -s --max-time 3 --head https://teleport.ludojoy.com | grep -E "HTTP/.* (200|301|302)" > /dev/null) &
+    pid1=$!
+
+    (curl -s --max-time 3 --head https://grafana.ludosupreme.com | grep -E "HTTP/.* (200|301|302)" > /dev/null) &
+    pid2=$!
+
+    wait $pid1
+    result1=$?
+
+    wait $pid2
+    result2=$?
+
+    if [ $result1 -eq 0 ] || [ $result2 -eq 0 ]; then
+        return 0  # VPN is connected
     else
-        return 1
+        return 1  # VPN is not connected
     fi
 }
 

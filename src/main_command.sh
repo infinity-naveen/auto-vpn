@@ -39,6 +39,7 @@ stop_vpn() {
 }
 
 check_status() {
+    echo "Checking status..."
     if check_vpn_connection; then
         echo "Current VPN status: Connected"
     else
